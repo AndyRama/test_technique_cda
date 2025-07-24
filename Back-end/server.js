@@ -1,14 +1,15 @@
-import app from './src/app';
-import connectDB from './src/config/database';
+const app = require('./src/app')
 
-const PORT = process.env.PORT || 5000;
+const connectDB = require('./src/config/database')
+
+const PORT = process.env.PORT || 5000
 
 // Connexion à la base de données
 
-connectDB();
+connectDB()
 
 const server = app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
-});
+  console.log(`Serveur démarré sur le port ${PORT}`)
+})
 
-export default server;
+module.exports = server
