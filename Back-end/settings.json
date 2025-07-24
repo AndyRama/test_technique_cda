@@ -1,0 +1,8 @@
+{
+	"window.zoomLevel": 2,
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 1000
+}
