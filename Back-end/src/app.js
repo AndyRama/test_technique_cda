@@ -1,17 +1,17 @@
-const express = require('express')
-const cors = require('cors')
-const dotenv = require('dotenv')
-const errorHandler = require('./middelware/errorHandler')
+import { json, urlencoded } from 'express'
+import cors from 'cors'
+import { config } from 'dotenv'
+import errorHandler from './middelware/errorHandler'
 
-dotenv.config()
+config()
 
 // Middleware
 
 app.use(cors())
 
-app.use(express.json())
+app.use(json())
 
-app.use(express.urlencoded({ extended: true }))
+app.use(urlencoded({ extended: true }))
 
 // Routes
 
@@ -33,4 +33,4 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' })
 })
 
-module.exports = app
+export default app
