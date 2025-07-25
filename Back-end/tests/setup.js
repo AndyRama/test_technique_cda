@@ -1,41 +1,20 @@
-// Configuration globale pour Jest
+// Configuration Jest - Charge .env.test automatiquement
 const dotenv = require('dotenv');
 
-// Charger les variables d'environnement de test
+// IMPORTANT: Charger .env.test AVANT tout
 dotenv.config({ path: '.env.test' });
 
-// Forcer NODE_ENV en test
+// Forcer NODE_ENV
 process.env.NODE_ENV = 'test';
 
-// Configuration timeouts
+// Timeout pour tests
 jest.setTimeout(30000);
-
-// Mock console pour des tests plus propres
-const originalConsole = { ...console };
-
-beforeAll(() => {
-  // Garder seulement les erreurs importantes pendant les tests
-  console.log = jest.fn();
-  console.info = jest.fn();
-  console.warn = jest.fn();
-  // Garder console.error pour le debug
-});
-
-afterAll(() => {
-  // Restaurer console après les tests
-  Object.assign(console, originalConsole);
-});
 
 // Nettoyage après chaque test
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-// Gestion des erreurs non capturées
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Promise Rejection:', err);
-});
-
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-});
+console.log('Tests configurés avec .env.test');
+console.log('MongoDB:', process.env.MONGODB_URI?.includes('localhost') ? 'Local' : 'Atlas');
+console.log('Port:', process.env.PORT);
