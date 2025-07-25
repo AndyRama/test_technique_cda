@@ -65,7 +65,12 @@ app.use((req, res) => {
       'GET /api/movies/trending - Films populaires',
       'GET /api/movies/search?q=titre - Rechercher des films',
       'GET /api/movies/:imdbId - Détails d\'un film',
-    ]
+    ],
+     examples: {
+      movieSearch: 'curl "http://localhost:5000/api/movies/search?q=avenger"',
+      movieDetails: 'curl "http://localhost:5000/api/movies/tt1375666"',
+      popularMovies: 'curl "http://localhost:5000/api/movies/popular"'
+    }
   })
 })
 

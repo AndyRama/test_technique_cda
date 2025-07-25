@@ -1,68 +1,93 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background-color: #f9fafb; /* Tailwind bg-gray-50 */
+  color: #111827; /* Tailwind text-gray-900 */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+/* Removed @layer and @apply for compatibility */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.2s;
+  outline: none;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.btn-primary {
+  background-color: #ec8609; /* Tailwind bg-primary-600 */
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #ec8609; /* Tailwind hover:bg-primary-700 */
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 2px #ec8609; /* Tailwind focus:ring-primary-500 */
+}
+
+.btn-secondary {
+  background-color: #e5e7eb; /* Tailwind bg-gray-200 */
+  color: #111827;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db; /* Tailwind hover:bg-gray-300 */
+}
+
+.btn-secondary:focus {
+  box-shadow: 0 0 0 2px #6b7280; /* Tailwind focus:ring-gray-500 */
+}
+
+.btn-danger {
+  background-color: #dc2626; /* Tailwind bg-red-600 */
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c; /* Tailwind hover:bg-red-700 */
+}
+
+.btn-danger:focus {
+  box-shadow: 0 0 0 2px #ef4444; /* Tailwind focus:ring-red-500 */
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2px #3b82f6; /* Tailwind focus:ring-primary-500 */
+  border-color: transparent;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb; /* Tailwind border-gray-200 */
+  padding: 1.5rem;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  height: 2rem;
+  width: 2rem;
+  border-bottom: 2px solid #ec8609; /* Tailwind border-primary-600 */
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
