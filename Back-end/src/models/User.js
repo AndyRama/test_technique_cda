@@ -46,7 +46,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index pour les recherches
-userSchema.index({ email: 1 });
 userSchema.index({ name: 1 });
 
 // Middleware pour hasher le mot de passe avant sauvegarde

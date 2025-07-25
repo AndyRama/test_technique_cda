@@ -59,7 +59,7 @@ const validateUserUpdate = [
     .withMessage('isActive doit être un booléen')
 ];
 
-// Routes CRUD
+// Routes CRUD - UNE SEULE DE CHAQUE
 router.post('/', validateUserCreation, createUser);
 router.get('/', getAllUsers);
 router.get('/:id', getUserById);

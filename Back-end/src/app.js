@@ -14,22 +14,18 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/users', require('./routes/users'))
+app.use('/api/movies', require('./routes/movies'))
 
-// Route de test
-app.get('/api/health', (req, res) => {
-  res.json({ message: 'API is running!', timestamp: new Date().toISOString() })
-})
-
-// Route pour de l'API en fonctionnement
+// Route de test (une seule fois)
 app.get('/api/health', (req, res) => {
   res.json({
     message: 'API is running!',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    currentPhase: 'Phase 1',
+    currentPhase: 'Phase 2',
     status: {
-      phase1: 'Users API - Complet',
-      phase2: 'Movies API - À venir',
+      phase1: 'Users API - Complet ✅',
+      phase2: 'Movies API - Complet ✅',
       phase3: 'Frontend React - À venir',
     },
     endpoints: {
@@ -47,14 +43,14 @@ app.get('/api/health', (req, res) => {
 })
 
 // Middleware de gestion des erreurs
-app.use(errorHandler);
+app.use(errorHandler)
 
-// Route 404 pour toutes les autres routes
-app.use('*', (req, res) => {
+// Route 404 pour toutes les autres routes (sans *)
+app.use((req, res) => {
   res.status(404).json({ 
     success: false,
     message: 'Route not found',
-    phase: 'Phase 3 active',
+    requestedPath: req.path,
     availableEndpoints: [
       'GET /api/health - Santé de l\'API',
       '',
@@ -64,12 +60,13 @@ app.use('*', (req, res) => {
       'GET /api/users/:id - Récupérer un utilisateur',
       'PUT /api/users/:id - Modifier un utilisateur', 
       'DELETE /api/users/:id - Supprimer un utilisateur',
-    ],
-    comingSoon: [
-			'Phase 2: /api/movies - Recherche de films OMDb',
-      'Phase 3: Frontend React avec Vite.js'
-    ],
-  });
-});
+      '',
+      '=== Movies API (Phase 2) ===',
+      'GET /api/movies/trending - Films populaires',
+      'GET /api/movies/search?q=titre - Rechercher des films',
+      'GET /api/movies/:imdbId - Détails d\'un film',
+    ]
+  })
+})
 
-module.exports = app;
+module.exports = app
