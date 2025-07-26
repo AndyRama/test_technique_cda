@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar'
 import Home from './pages/Home'
 import MoviesPage from './pages/MoviesPage'
 import MovieDetailPage from './pages/MovieDetailPage'
+import UsersPage from './pages/UsersPage'
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<MoviesPage />} />
             <Route path="/movies/:id" element={<MovieDetailPage />} />
-            <Route path="/users" element={<h1>Utilisateurs</h1>} />
+            <Route path="/users" element={<UsersPage />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
         </main>
       </div>
