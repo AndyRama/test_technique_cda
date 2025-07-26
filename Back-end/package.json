@@ -1,6 +1,6 @@
 {
   "name": "my-movie-application-back-end",
-  "version": "1.0.0",  
+  "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -18,21 +18,25 @@
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^17.2.0",
-    "express": "^4.19.2",
+    "express": "^4.18.2",
     "express-validator": "^7.2.1",
+    "finalhandler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.4"
+    "mongoose": "^8.16.4",
+    "router": "^2.2.0"
   },
   "devDependencies": {
     "jest": "^29.6.2",
-    "prettier": "3.6.2",
     "nodemon": "3.0.1",
+    "prettier": "3.6.2",
     "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 30000,
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "verbose": true,
     "forceExit": true,
     "detectOpenHandles": true,
