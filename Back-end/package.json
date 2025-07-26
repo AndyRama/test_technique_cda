@@ -22,8 +22,7 @@
     "express-validator": "^7.2.1",
     "finalhandler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.4",
-    "router": "^2.2.0"
+    "mongoose": "^8.16.4"
   },
   "devDependencies": {
     "jest": "^29.6.2",
