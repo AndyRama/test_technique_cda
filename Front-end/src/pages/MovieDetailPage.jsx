@@ -64,7 +64,6 @@ const MovieDetailPage = () => {
 	return (
 		<div className="space-y-6">
 			<Button onClick={() => navigate('/movies')} variant="secondary">
-				<ArrowLeft className="w-4 h-4 mr-2" />
 				Retour aux films
 			</Button>
 
