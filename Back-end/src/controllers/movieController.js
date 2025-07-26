@@ -51,16 +51,46 @@ const getMockMovieDetails = (id) => ({
   message: 'Données simulées pour tests'
 });
 
+// Helper pour analyser les erreurs de validation
+const getValidationErrorMessage = (errors, query) => {
+  const { q } = query;
+  
+  // Priorité aux erreurs de paramètre q
+  if (!q || q.trim() === '') {
+    return 'Le paramètre de recherche est requis';
+  }
+  
+  if (q && q.trim().length < 2) {
+    return 'La recherche doit contenir au moins 2 caractères';
+  }
+  
+  // Autres erreurs
+  const firstError = errors[0];
+  switch (firstError.param) {
+    case 'type':
+      return 'Le type doit être "movie", "series" ou "episode"';
+    case 'year':
+      return 'L\'année doit être valide';
+    case 'page':
+      return 'La page doit être un nombre valide';
+    default:
+      return firstError.msg || 'Erreurs de validation';
+  }
+};
+
 // @desc    Rechercher des films
 // @route   GET /api/movies/search
 // @access  Public
 const searchMovies = async (req, res, next) => {
   try {
+    // Validation des erreurs
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      const message = getValidationErrorMessage(errors.array(), req.query);
+      
       return res.status(400).json({
         success: false,
-        message: 'Erreurs de validation',
+        message: message,
         errors: errors.array()
       });
     }
@@ -82,7 +112,7 @@ const searchMovies = async (req, res, next) => {
       });
     }
 
-    // Mode production - appeler OMDb
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.status(502).json({
         success: false,
@@ -91,8 +121,10 @@ const searchMovies = async (req, res, next) => {
       });
     }
 
+    // Appel au service OMDb
     const result = await omdbService.searchMovies(q, year, type, page);
 
+    // Gestion des erreurs de service
     if (!result.success && !result.fromCache) {
       return res.status(502).json({
         success: false,
@@ -103,6 +135,7 @@ const searchMovies = async (req, res, next) => {
       });
     }
 
+    // Réponse de succès
     res.json({
       success: true,
       query: q,
@@ -116,6 +149,7 @@ const searchMovies = async (req, res, next) => {
       fromCache: result.fromCache || false,
       message: result.fromCache ? 'Résultats depuis le cache local' : 'Résultats depuis OMDb'
     });
+
   } catch (error) {
     console.error('Erreur dans searchMovies:', error.message);
     
@@ -132,11 +166,12 @@ const searchMovies = async (req, res, next) => {
 // @access  Public
 const getMovieById = async (req, res, next) => {
   try {
+    // Validation des erreurs
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'ID OMDb invalide',
+        message: 'ID IMDb invalide',
         errors: errors.array()
       });
     }
@@ -149,7 +184,7 @@ const getMovieById = async (req, res, next) => {
       return res.json(mockResult);
     }
 
-    // Mode production
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.status(502).json({
         success: false,
@@ -157,8 +192,10 @@ const getMovieById = async (req, res, next) => {
       });
     }
 
+    // Appel au service OMDb
     const result = await omdbService.getMovieById(id);
 
+    // Film non trouvé
     if (!result.success && !result.data) {
       return res.status(404).json({
         success: false,
@@ -167,6 +204,7 @@ const getMovieById = async (req, res, next) => {
       });
     }
 
+    // Erreur du service mais données en cache
     if (!result.success && result.data) {
       return res.status(502).json({
         success: false,
@@ -177,12 +215,14 @@ const getMovieById = async (req, res, next) => {
       });
     }
 
+    // Succès
     res.json({
       success: true,
       data: result.data,
       fromCache: result.fromCache,
       message: result.fromCache ? 'Données depuis le cache' : 'Données depuis OMDb'
     });
+
   } catch (error) {
     console.error('Erreur dans getMovieById:', error.message);
     
@@ -201,20 +241,42 @@ const getMovieById = async (req, res, next) => {
   }
 };
 
-// @desc    Récupérer les films populaires
-// @route   GET /api/movies/popular
+// @desc    Récupérer les films populaires/trending
+// @route   GET /api/movies/popular || GET /api/movies/trending
 // @access  Public
 const getPopularMovies = async (req, res, next) => {
   try {
     const { limit = 10 } = req.query;
+    const parsedLimit = parseInt(limit);
 
     // Mode test - données simulées
     if (isTestMode()) {
       const mockMovies = [
-        { title: 'Mock Popular Movie 1', searchCount: 15, imdbID: 'tt1111111' },
-        { title: 'Mock Popular Movie 2', searchCount: 12, imdbID: 'tt2222222' },
-        { title: 'Mock Popular Movie 3', searchCount: 10, imdbID: 'tt3333333' }
-      ].slice(0, parseInt(limit));
+        { 
+          title: 'Mock Popular Movie 1', 
+          searchCount: 15, 
+          imdbID: 'tt1111111',
+          year: '2023',
+          type: 'movie',
+          poster: 'https://via.placeholder.com/300x400?text=Popular+1'
+        },
+        { 
+          title: 'Mock Popular Movie 2', 
+          searchCount: 12, 
+          imdbID: 'tt2222222',
+          year: '2022',
+          type: 'movie',
+          poster: 'https://via.placeholder.com/300x400?text=Popular+2'
+        },
+        { 
+          title: 'Mock Popular Movie 3', 
+          searchCount: 10, 
+          imdbID: 'tt3333333',
+          year: '2021',
+          type: 'movie',
+          poster: 'https://via.placeholder.com/300x400?text=Popular+3'
+        }
+      ].slice(0, parsedLimit);
 
       return res.json({
         success: true,
@@ -223,7 +285,7 @@ const getPopularMovies = async (req, res, next) => {
       });
     }
 
-    // Mode production
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.json({
         success: true,
@@ -232,13 +294,15 @@ const getPopularMovies = async (req, res, next) => {
       });
     }
 
-    const result = await omdbService.getPopularMovies(parseInt(limit));
+    // Appel au service OMDb
+    const result = await omdbService.getPopularMovies(parsedLimit);
 
     res.json({
       success: true,
       data: result.data || [],
       message: `Top ${result.data?.length || 0} films les plus recherchés`
     });
+
   } catch (error) {
     console.error('Erreur dans getPopularMovies:', error.message);
     
@@ -263,24 +327,33 @@ const getCacheStats = async (req, res, next) => {
           total: 5,
           active: 5,
           expired: 0,
+          memoryUsage: '2.4MB',
+          lastCleared: new Date().toISOString(),
           topMovies: [
-            { title: 'Mock Movie 1', searchCount: 10 },
-            { title: 'Mock Movie 2', searchCount: 8 }
+            { title: 'Mock Movie 1', searchCount: 10, lastAccessed: new Date().toISOString() },
+            { title: 'Mock Movie 2', searchCount: 8, lastAccessed: new Date().toISOString() }
           ]
         },
         message: 'Statistiques du cache simulées'
       });
     }
 
-    // Mode production
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.json({
         success: true,
-        cache: { total: 0, active: 0, expired: 0, topMovies: [] },
+        cache: { 
+          total: 0, 
+          active: 0, 
+          expired: 0, 
+          memoryUsage: '0MB',
+          topMovies: [] 
+        },
         message: 'Service OMDb non disponible'
       });
     }
 
+    // Récupération des statistiques
     const stats = await omdbService.getCacheStats();
     
     res.json({
@@ -288,6 +361,7 @@ const getCacheStats = async (req, res, next) => {
       cache: stats,
       message: 'Statistiques du cache'
     });
+
   } catch (error) {
     console.error('Erreur getCacheStats:', error.message);
     next(error);
@@ -303,24 +377,30 @@ const clearCache = async (req, res, next) => {
     if (isTestMode()) {
       return res.json({
         success: true,
-        message: 'Cache simulé vidé avec succès'
+        message: 'Cache simulé vidé avec succès',
+        clearedAt: new Date().toISOString(),
+        itemsRemoved: 5
       });
     }
 
-    // Mode production
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.json({
         success: true,
-        message: 'Aucun cache à vider - service OMDb non disponible'
+        message: 'Aucun cache à vider - service OMDb non disponible',
+        clearedAt: new Date().toISOString(),
+        itemsRemoved: 0
       });
     }
 
+    // Vider le cache
     const result = await omdbService.clearCache();
     
     if (result.success) {
       res.json({
         success: true,
-        message: result.message
+        message: result.message,
+        clearedAt: new Date().toISOString()
       });
     } else {
       res.status(500).json({
@@ -329,6 +409,7 @@ const clearCache = async (req, res, next) => {
         error: result.error
       });
     }
+
   } catch (error) {
     console.error('Erreur clearCache:', error.message);
     next(error);
@@ -345,19 +426,23 @@ const testOMDbConnection = async (req, res, next) => {
       return res.json({
         success: false,
         message: 'Test OMDb simulé - mode test actif',
-        error: 'Mode test - pas de vraie connexion OMDb'
+        error: 'Mode test - pas de vraie connexion OMDb',
+        testMode: true,
+        timestamp: new Date().toISOString()
       });
     }
 
-    // Mode production
+    // Mode production - vérifier disponibilité du service
     if (!omdbService) {
       return res.status(502).json({
         success: false,
         message: 'Service OMDb non disponible',
-        error: 'Module OMDb non chargé'
+        error: 'Module OMDb non chargé',
+        timestamp: new Date().toISOString()
       });
     }
 
+    // Test de connexion
     const result = await omdbService.testConnection();
     
     const statusCode = result.success ? 200 : 502;
@@ -369,16 +454,19 @@ const testOMDbConnection = async (req, res, next) => {
       details: {
         apiKey: result.apiKey,
         testMovie: result.testMovie,
+        responseTime: result.responseTime || 'N/A',
         timestamp: new Date().toISOString()
       }
     });
+
   } catch (error) {
     console.error('Erreur test OMDb:', error.message);
     
     res.status(500).json({
       success: false,
       message: 'Erreur lors du test de connexion OMDb',
-      error: isTestMode() ? 'Erreur simulée pour tests' : error.message
+      error: isTestMode() ? 'Erreur simulée pour tests' : error.message,
+      timestamp: new Date().toISOString()
     });
   }
 };

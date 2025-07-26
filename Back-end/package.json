@@ -1,6 +1,6 @@
 {
   "name": "my-movie-application-back-end",
-  "version": "1.0.0",
+  "version": "1.0.0",  
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -8,7 +8,9 @@
     "test": "jest --runInBand --forceExit",
     "test:users": "jest tests/users.test.js --runInBand --forceExit",
     "test:movies": "jest tests/movies.test.js --runInBand --forceExit",
-    "test:coverage": "jest --coverage --runInBand --forceExit"
+    "test:coverage": "jest --coverage --runInBand --forceExit",
+    "test:watch": "jest --watch --runInBand",
+    "test:verbose": "jest --verbose --runInBand --forceExit"
   },
   "keywords": [
     "node",
@@ -25,27 +27,24 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
-    "express": "^4.21.2",
+    "express": "^4.19.2",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.4"
   },
   "devDependencies": {
     "jest": "^29.6.2",
-    "nodemon": "3.0.1",
     "prettier": "3.6.2",
+    "nodemon": "3.0.1",
     "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 30000,
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.js"
-    ],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
     "verbose": true,
     "forceExit": true,
     "detectOpenHandles": true,
-    "runInBand": true,
     "clearMocks": true,
     "collectCoverageFrom": [
       "src/**/*.js",
