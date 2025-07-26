@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Users, Plus } from 'lucide-react'
-import { usersApi } from '../services/api'
+import apiService from '../services/apiService'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
@@ -34,11 +34,11 @@ const UsersPage = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await usersApi.getAll()
-        if (response.data.success) {
-          setUsers(response.data.data || [])
+        const data = await apiService.getUsers()
+        if (data.success) {
+          setUsers(data.data || [])
         } else {
-          setError(response.data.message || 'Service temporairement indisponible')
+          setError(data.message || 'Service temporairement indisponible')
         }
       } catch (error) {
         setError('Erreur de connexion à l\'API')
@@ -85,12 +85,12 @@ const UsersPage = () => {
       }
       
       // Appel API pour créer l'utilisateur
-      const response = await usersApi.create(userData)
+      const data = await apiService.createUser(userData)
       
-      if (response.data.success) {
+      if (data.success) {
         setFormSuccess(true)
         // Ajout du nouvel utilisateur à la liste
-        setUsers(prev => [...prev, response.data.data])
+        setUsers(prev => [...prev, data.data])
         
         // Fermeture automatique du modal après 1.5 secondes
         setTimeout(() => {
@@ -98,13 +98,15 @@ const UsersPage = () => {
           resetForm()
         }, 1500)
       } else {
-        setFormError(response.data.message || 'Erreur lors de la création')
+        setFormError(data.message || 'Erreur lors de la création')
       }
     } catch (error) {
       // Gestion des erreurs de validation
       if (error.response?.data?.errors) {
         const errorMessages = error.response.data.errors.map(err => err.msg).join(', ')
         setFormError(errorMessages)
+      } else if (error.response?.data?.message) {
+        setFormError(error.response.data.message)
       } else {
         setFormError('Erreur de connexion à l\'API')
       }

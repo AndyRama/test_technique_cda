@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Star, Calendar, Clock, User, Users, Film } from 'lucide-react'
-import { moviesApi } from '../services/api'
+import apiService from '../services/apiService'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
@@ -18,11 +18,11 @@ const MovieDetailPage = () => {
 	useEffect(() => {
 		const loadMovie = async () => {
 			try {
-				const response = await moviesApi.getById(id)
-				if (response.data.success) {
-					setMovie(response.data.data)
+				const data = await apiService.getMovieById(id)
+				if (data.success) {
+					setMovie(data.data)
 				} else {
-					setError(response.data.message || 'Film non trouvé')
+					setError(data.message || 'Film non trouvé')
 				}
 			} catch (error) {
 				setError('Erreur lors du chargement du film')

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Film, Users, Search, Zap, Shield, Star, TrendingUp } from 'lucide-react'
-import { systemApi, moviesApi } from '../services/api'
+import apiService from '../services/apiService'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
@@ -40,14 +40,14 @@ const Home = () => {
     const loadData = async () => {
       try {
         // Charger le statut de l'API
-        const healthResponse = await systemApi.health()
-        setApiStatus(healthResponse.data)
+        const healthData = await apiService.checkHealth()
+        setApiStatus(healthData)
 
         // Charger quelques films populaires pour l'aperçu
         try {
-          const moviesResponse = await moviesApi.getPopular()
-          if (moviesResponse.data.success) {
-            setPopularMovies(moviesResponse.data.data?.slice(0, 3) || [])
+          const moviesData = await apiService.getPopularMovies(3)
+          if (moviesData.success) {
+            setPopularMovies(moviesData.data?.slice(0, 3) || [])
           }
         } catch (error) {
           console.log('Movies API not available')
@@ -128,13 +128,11 @@ const Home = () => {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/movies">
             <Button size="lg" className="bg-white hover:text-orange-600 hover:bg-gray-100 rounded-lg flex-row">
-              {/* <Search className="w-5 h-5 mt-1 mr-2" /> */}
               Découvrir les Films
             </Button>
           </Link>
           <Link to="/users">
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-orange-600">
-              {/* <Users className="w-5 h-5 mr-2" /> */}
               <span>Gérer les Utilisateurs</span>
             </Button>
           </Link>
@@ -275,7 +273,7 @@ const Home = () => {
           })}
         </div>
       </Card>
-  </div>
+    </div>
   )
 }
 

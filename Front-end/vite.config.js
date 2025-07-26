@@ -15,6 +15,22 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // Désactivé en production pour réduire la taille
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          utils: ['axios', 'clsx', 'tailwind-merge']
+        }
+      }
+    }
   },
+  preview: {
+    port: 3000,
+  },
+  // Configuration pour la production
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+  }
 })

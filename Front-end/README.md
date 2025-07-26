@@ -166,7 +166,7 @@ GET /api/movies/:id                         # Détails film (format: tt1234567)
 GET /api/movies/popular                     # Films les plus recherchés
 GET /api/movies/test                        # Tester connexion OMDB
 GET /api/movies/cache/stats                 # Statistique du cache 
-DELETE /api/movies/cache                    #vider le cache
+DELETE /api/movies/cache                    # Vider le cache
 ```
 
 ### API Externe (OMDb)

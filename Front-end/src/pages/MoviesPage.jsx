@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Film } from 'lucide-react'
-import { moviesApi } from '../services/api'
+import apiService from '../services/apiService'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
@@ -50,11 +50,11 @@ const MoviesPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await moviesApi.getPopular()
-      if (response.data.success) {
-        setMovies(response.data.data || [])
+      const data = await apiService.getPopularMovies()
+      if (data.success) {
+        setMovies(data.data || [])
       } else {
-        setError(response.data.message || 'Erreur lors du chargement')
+        setError(data.message || 'Erreur lors du chargement')
       }
     } catch (error) {
       setError('Erreur de connexion à l\'API')
@@ -72,11 +72,11 @@ const MoviesPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await moviesApi.search({ q: query })
-      if (response.data.success) {
-        setMovies(response.data.data || [])
+      const data = await apiService.searchMovies(query)
+      if (data.success) {
+        setMovies(data.data || [])
       } else {
-        setError(response.data.message || 'Aucun résultat trouvé')
+        setError(data.message || 'Aucun résultat trouvé')
         setMovies([])
       }
     } catch (error) {

@@ -25,7 +25,7 @@ app.get('/api/health', (req, res) => {
     message: 'API is running!', 
     timestamp: new Date().toISOString(),
     version: '1.3.0',
-    currentPhase: 'Phase 2',
+    currentPhase: 'Phase 3',
     status: {
       phase1: 'Users API - ✅ Actif',
       phase3: 'Movies API - ✅ Actif',
