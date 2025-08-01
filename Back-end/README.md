@@ -140,6 +140,7 @@ curl -X POST http://localhost:5000/api/users \
   -d '{
     "name": "Andy Rama",
     "email": "andy@example.com",
+    "password":"pbxk106789",
     "age": 40
   }'
 
