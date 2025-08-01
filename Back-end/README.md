@@ -127,7 +127,14 @@ DELETE /api/users/:id          # Supprimer un utilisateur
 ### Exemple d'utilisation
 
 ```bash
-# Créer un utilisateur
+
+# Récupérer tous les utilisateurs
+curl http://localhost:5000/api/users
+
+# Supprimer User andy avec Id : 688395e30f054a453dd97e4c
+curl -X DELETE http://localhost:5000/api/users/688395e30f054a453dd97e4c
+
+# Créer un utilisateur Andy
 curl -X POST http://localhost:5000/api/users \
   -H "Content-Type: application/json" \
   -d '{
@@ -136,8 +143,6 @@ curl -X POST http://localhost:5000/api/users \
     "age": 40
   }'
 
-# Récupérer tous les utilisateurs
-curl http://localhost:5000/api/users
 ```
 
 ## 🎬 Phase 2 - API Movies
@@ -167,12 +172,12 @@ DELETE /api/movies/cache                         # Vider le cache
 
 ### Paramètres de recherche disponibles
 
-| Paramètre | Description | Exemple |
-|-----------|-------------|---------|
-| `q` | Titre du film (requis) | `q=Avengers` |
-| `year` | Année de sortie | `year=2019` |
-| `type` | Type de contenu | `type=movie` ou `type=series` |
-| `page` | Page de résultats | `page=2` |
+| Paramètre | Description            | Exemple                       |
+|-----------|------------------------|-------------------------------|
+| `q`       | Titre du film (requis) | `q=Avengers`                  |
+| `year`    | Année de sortie        | `year=2019`                   |
+| `type`    | Type de contenu        | `type=movie` ou `type=series` |
+| `page`    | Page de résultats      | `page=2`                      |
 
 ### Exemples d'utilisation
 
