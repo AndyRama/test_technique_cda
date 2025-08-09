@@ -9,6 +9,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner'
 import SearchInput from '../components/ui/SearchInput'
 import EmptyState from '../components/ui/EmptyState'
 import ErrorMessage from '../components/ui/ErrorMessage'
+import { parseSearchQuery } from '../utils/helpers'
 
 // Nouveau composant Poster pour gérer les différents états
 const Poster = ({ url, title }) => {
@@ -63,7 +64,15 @@ const MoviesPage = () => {
     }
   }
 
-  const searchMovies = async (query) => {
+  const searchMovies = async (searchText) => {
+    if (!searchText.trim()) {
+      loadPopularMovies()
+      return
+    }
+
+    // Analyser la requête pour extraire le titre, l'année et le type
+    const { query, year, type } = parseSearchQuery(searchText)
+    
     if (!query.trim()) {
       loadPopularMovies()
       return
@@ -72,7 +81,13 @@ const MoviesPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await apiService.searchMovies(query)
+      // Construire les filtres avec l'année et le type s'ils existent
+      const filters = {}
+      if (year) filters.year = year
+      if (type) filters.type = type
+      
+      const data = await apiService.searchMovies(query, filters)
+      
       if (data.success) {
         setMovies(data.data || [])
       } else {
@@ -102,11 +117,19 @@ const MoviesPage = () => {
       {/* Search */}
       <Card>
         <SearchInput
-          placeholder="Rechercher un film... (ex: Inception, Batman)"
+          placeholder="Rechercher... (ex: Batman 2008 movie, Game of Thrones series, Inception)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onSearch={searchMovies}
         />
+        <div className="mt-3 text-sm text-gray-600">
+          <p className="font-medium mb-1">💡 Filtres disponibles :</p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <span className="bg-gray-100 px-2 py-1 rounded">Année : "batman 2008"</span>
+            <span className="bg-blue-100 px-2 py-1 rounded">Type : "inception movie" ou "breaking bad series"</span>
+            <span className="bg-green-100 px-2 py-1 rounded">Combiné : "dark knight 2008 movie"</span>
+          </div>
+        </div>
       </Card>
 
       {/* Content */}
@@ -145,9 +168,19 @@ const MoviesPage = () => {
                     {movie.title}
                   </h3>
                   <div className="flex items-center justify-between mt-2">
-                    <Badge variant="secondary" size="sm">
-                      {movie.year}
-                    </Badge>
+                    <div className="flex gap-1">
+                      <Badge variant="secondary" size="sm">
+                        {movie.year}
+                      </Badge>
+                      {movie.type && (
+                        <Badge 
+                          variant={movie.type === 'movie' ? 'default' : movie.type === 'series' ? 'primary' : 'secondary'} 
+                          size="sm"
+                        >
+                          {movie.type === 'movie' ? '🎬' : movie.type === 'series' ? '📺' : '🎮'} {movie.type}
+                        </Badge>
+                      )}
+                    </div>
                     {movie.searchCount && (
                       <Badge variant="error" size="sm">
                         🔥 {movie.searchCount}

@@ -74,3 +74,44 @@ export const getInitials = (name) => {
     .join('')
     .substring(0, 2)
 }
+
+/**
+ * Analyser une requête de recherche pour extraire le titre, l'année et le type
+ * Ex: "batman 2008 movie" -> { query: "batman", year: 2008, type: "movie" }
+ * Ex: "game of thrones series" -> { query: "game of thrones", year: null, type: "series" }
+ * Ex: "inception movie 2010" -> { query: "inception", year: 2010, type: "movie" }
+ */
+export const parseSearchQuery = (searchText) => {
+  if (!searchText) return { query: '', year: null, type: null }
+  
+  let text = searchText.trim().toLowerCase()
+  let year = null
+  let type = null
+  
+  // Rechercher le type (movie, series, episode)
+  const typePatterns = [
+    { pattern: /\b(movie|film|movies|films)\b/g, value: 'movie' },
+    { pattern: /\b(series|serie|series|tv|show|shows)\b/g, value: 'series' },
+    { pattern: /\b(episode|episodes)\b/g, value: 'episode' }
+  ]
+  
+  for (const { pattern, value } of typePatterns) {
+    if (pattern.test(text)) {
+      type = value
+      text = text.replace(pattern, '').trim()
+      break
+    }
+  }
+  
+  // Rechercher une année (4 chiffres entre 1900 et 2030)
+  const yearMatch = text.match(/\b(19|20)\d{2}\b/)
+  if (yearMatch) {
+    year = parseInt(yearMatch[0])
+    text = text.replace(yearMatch[0], '').trim()
+  }
+  
+  // Nettoyer les espaces multiples
+  const query = text.replace(/\s+/g, ' ').trim()
+  
+  return { query, year, type }
+}
