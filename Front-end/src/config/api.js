@@ -1,7 +1,7 @@
 // Configuration des URLs API
 const API_BASE_URL = import.meta.env.VITE_API_URL || 
   (import.meta.env.PROD 
-    ? 'https://your-backend-url.vercel.app/api'  // Production
+    ? 'https://test-technique-cda-gesb.vercel.app/api'  // Production
     : '/api'  // Développement avec proxy Vite
   )
 
